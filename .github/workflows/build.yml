@@ -1,0 +1,29 @@
+name: Build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v2
+        with:
+          msbuild-architecture: x64
+    
+      - name: MSBuild
+        run: MSBuild .\CCC24-Test01.sln -property:Configuration=Release,Platform=x64
+          
+      - name: Upload built artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: CCC24-Test01
+          path: bin\x64\Release\CCC24-Test01.exe
+          if-no-files-found: error
